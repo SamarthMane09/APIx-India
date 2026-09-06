@@ -1,0 +1,6 @@
+{
+  "name": "APIx-India",
+  "description": "Real-Time Airfare Price Index for Retail Inflation Augmentation for MoSPI, RBI, and DGCA",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

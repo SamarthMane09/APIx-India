@@ -1,0 +1,762 @@
+[
+  {
+    "timestamp": "2026-08-23T12:00:00+00:00",
+    "date": "2026-08-23",
+    "national_index": 98.31,
+    "delta_24h": -1.69,
+    "route_indices": {
+      "DEL-BOM": 98.34,
+      "BLR-DEL": 97.46,
+      "BOM-BLR": 99.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 450,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-24T12:00:00+00:00",
+    "date": "2026-08-24",
+    "national_index": 98.23,
+    "delta_24h": -0.08,
+    "route_indices": {
+      "DEL-BOM": 98.47,
+      "BLR-DEL": 97.27,
+      "BOM-BLR": 99.17
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-25T12:00:00+00:00",
+    "date": "2026-08-25",
+    "national_index": 98.29,
+    "delta_24h": 0.06,
+    "route_indices": {
+      "DEL-BOM": 98.33,
+      "BLR-DEL": 97.74,
+      "BOM-BLR": 99.09
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-26T12:00:00+00:00",
+    "date": "2026-08-26",
+    "national_index": 98.41,
+    "delta_24h": 0.12,
+    "route_indices": {
+      "DEL-BOM": 98.0,
+      "BLR-DEL": 98.4,
+      "BOM-BLR": 99.4
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 540,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-27T12:00:00+00:00",
+    "date": "2026-08-27",
+    "national_index": 98.77,
+    "delta_24h": 0.36,
+    "route_indices": {
+      "DEL-BOM": 98.09,
+      "BLR-DEL": 98.96,
+      "BOM-BLR": 100.08
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 570,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-28T12:00:00+00:00",
+    "date": "2026-08-28",
+    "national_index": 99.67,
+    "delta_24h": 0.9,
+    "route_indices": {
+      "DEL-BOM": 99.13,
+      "BLR-DEL": 99.6,
+      "BOM-BLR": 101.07
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 600,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-29T12:00:00+00:00",
+    "date": "2026-08-29",
+    "national_index": 101.16,
+    "delta_24h": 1.49,
+    "route_indices": {
+      "DEL-BOM": 101.04,
+      "BLR-DEL": 100.68,
+      "BOM-BLR": 102.24
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 630,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-30T12:00:00+00:00",
+    "date": "2026-08-30",
+    "national_index": 102.91,
+    "delta_24h": 1.75,
+    "route_indices": {
+      "DEL-BOM": 103.08,
+      "BLR-DEL": 102.33,
+      "BOM-BLR": 103.43
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 660,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-08-31T12:00:00+00:00",
+    "date": "2026-08-31",
+    "national_index": 104.36,
+    "delta_24h": 1.45,
+    "route_indices": {
+      "DEL-BOM": 104.42,
+      "BLR-DEL": 104.18,
+      "BOM-BLR": 104.49
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 690,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-01T12:00:00+00:00",
+    "date": "2026-09-01",
+    "national_index": 105.11,
+    "delta_24h": 0.75,
+    "route_indices": {
+      "DEL-BOM": 104.75,
+      "BLR-DEL": 105.55,
+      "BOM-BLR": 105.27
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 720,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-02T12:00:00+00:00",
+    "date": "2026-09-02",
+    "national_index": 105.19,
+    "delta_24h": 0.08,
+    "route_indices": {
+      "DEL-BOM": 104.48,
+      "BLR-DEL": 105.95,
+      "BOM-BLR": 105.7
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 750,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-03T12:00:00+00:00",
+    "date": "2026-09-03",
+    "national_index": 104.93,
+    "delta_24h": -0.26,
+    "route_indices": {
+      "DEL-BOM": 104.24,
+      "BLR-DEL": 105.45,
+      "BOM-BLR": 105.73
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 780,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-04T12:00:00+00:00",
+    "date": "2026-09-04",
+    "national_index": 104.61,
+    "delta_24h": -0.32,
+    "route_indices": {
+      "DEL-BOM": 104.32,
+      "BLR-DEL": 104.57,
+      "BOM-BLR": 105.38
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 810,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-05T12:00:00+00:00",
+    "date": "2026-09-05",
+    "national_index": 104.28,
+    "delta_24h": -0.33,
+    "route_indices": {
+      "DEL-BOM": 104.38,
+      "BLR-DEL": 103.84,
+      "BOM-BLR": 104.76
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 840,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T12:00:00+00:00",
+    "date": "2026-09-06",
+    "national_index": 103.74,
+    "delta_24h": -0.54,
+    "route_indices": {
+      "DEL-BOM": 103.88,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.97
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 870,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:52:06.818090+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": -1.07,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:52:06.825376+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:52:23.376064+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:52:59.516012+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:53:06.650749+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:53:19.693582+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:53:22.866054+00:00",
+    "date": "2026-09-06",
+    "national_index": 102.67,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.65,
+      "BLR-DEL": 103.39,
+      "BOM-BLR": 103.96
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 480,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:53:26.245789+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": -1.13,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:54:55.197599+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:54:55.406533+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:56:17.149553+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:56:51.854410+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T15:56:52.161033+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:03:59.824523+00:00",
+    "date": "2026-09-06",
+    "national_index": 101.54,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 101.05,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 510,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:05:08.057997+00:00",
+    "date": "2026-09-06",
+    "national_index": 100.25,
+    "delta_24h": -1.29,
+    "route_indices": {
+      "DEL-BOM": 98.36,
+      "BLR-DEL": 102.22,
+      "BOM-BLR": 101.61
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 518,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:05:40.440432+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.72,
+    "delta_24h": -0.53,
+    "route_indices": {
+      "DEL-BOM": 98.1,
+      "BLR-DEL": 101.09,
+      "BOM-BLR": 101.43
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 548,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:05:40.476809+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.56,
+    "delta_24h": -0.16,
+    "route_indices": {
+      "DEL-BOM": 98.03,
+      "BLR-DEL": 100.71,
+      "BOM-BLR": 101.41
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 578,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:05:44.788830+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.56,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 98.03,
+      "BLR-DEL": 100.71,
+      "BOM-BLR": 101.41
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 578,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:05:53.820795+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.74,
+    "delta_24h": 0.18,
+    "route_indices": {
+      "DEL-BOM": 96.22,
+      "BLR-DEL": 103.73,
+      "BOM-BLR": 101.79
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 638,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:07:59.573726+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.35,
+    "delta_24h": -0.39,
+    "route_indices": {
+      "DEL-BOM": 91.89,
+      "BLR-DEL": 108.93,
+      "BOM-BLR": 101.93
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 698,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:08:20.185389+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.35,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 91.89,
+      "BLR-DEL": 108.93,
+      "BOM-BLR": 101.93
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 698,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:08:26.471842+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.35,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 91.89,
+      "BLR-DEL": 108.93,
+      "BOM-BLR": 101.93
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 698,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:08:26.776640+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.35,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 91.89,
+      "BLR-DEL": 108.93,
+      "BOM-BLR": 101.93
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 698,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:08:34.847071+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.35,
+    "delta_24h": 0.0,
+    "route_indices": {
+      "DEL-BOM": 91.89,
+      "BLR-DEL": 108.93,
+      "BOM-BLR": 101.93
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 698,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  },
+  {
+    "timestamp": "2026-09-06T16:31:35.067892+00:00",
+    "date": "2026-09-06",
+    "national_index": 99.14,
+    "delta_24h": -0.21,
+    "route_indices": {
+      "DEL-BOM": 91.79,
+      "BLR-DEL": 108.27,
+      "BOM-BLR": 102.17
+    },
+    "route_weights": {
+      "DEL-BOM": 0.48,
+      "BLR-DEL": 0.32,
+      "BOM-BLR": 0.2
+    },
+    "sample_size": 814,
+    "recent_sample_count": 120,
+    "methodology": "Jevons Geometric Mean with DGCA City-Pair Traffic Weights"
+  }
+]

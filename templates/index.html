@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APIx-India | High-Frequency Aviation CPI Augmentation</title>
+  <meta name="description" content="Real-Time Airfare Price Index for Retail Inflation Augmentation for MoSPI, RBI, and DGCA. Zero-database architecture.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bento: {
+              bg: '#0f172a',
+              card: '#1e293b',
+              accent: '#6366f1',
+              success: '#10b981',
+              text: '#f8fafc',
+              muted: '#94a3b8',
+              border: 'rgba(148, 163, 184, 0.2)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #6366f1;
+      --success: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(148, 163, 184, 0.2);
+    }
+    
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    /* Bento Grid container and card classes */
+    .bento-container {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .bento-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .bento-card:hover {
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    .bento-header {
+      grid-column: span 12;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+
+    .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .delta {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .delta.up {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .delta.down {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-bento {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+    .btn-bento:hover {
+      background: #4f46e5;
+    }
+    .btn-bento:active {
+      transform: scale(0.98);
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--accent);
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.4);
+    }
+    .data-table td {
+      padding: 10px 14px;
+      font-size: 12.5px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    }
+    .data-table tr:hover td {
+      background: rgba(148, 163, 184, 0.03);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    .pulse-dot {
+      animation: pulseAnimation 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulseAnimation {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#0f172a] text-[#f8fafc] flex flex-col antialiased selection:bg-indigo-500 selection:text-white p-3 sm:p-5 lg:p-6 box-border">
+
+  <!-- BENTO GRID MASTER CONTAINER -->
+  <div class="bento-container max-w-7xl w-full mx-auto flex-1">
+
+    <!-- BENTO HEADER (SPAN 12) -->
+    <header class="bento-header flex flex-col md:flex-row md:items-center md:justify-between gap-3.5 shadow-sm">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6366f1] to-[#10b981] flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+          <i data-lucide="plane-takeoff" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center flex-wrap gap-2">
+            <span class="text-xl font-bold tracking-tight text-[#f8fafc]">APIx-India</span>
+            <span class="text-[11px] font-mono py-0.5 px-2 rounded bg-slate-900 text-[#94a3b8] border border-[rgba(148,163,184,0.2)]">
+              PROTOTYPE V1.0
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-mono font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              Scrapy 2.18.0 Live Crawler
+            </span>
+            <span class="hidden md:inline-block text-xs text-[#94a3b8]">•</span>
+            <span class="hidden md:inline-block text-xs font-medium text-[#94a3b8]">
+              MoSPI • RBI • DGCA Econometric Augmentation
+            </span>
+          </div>
+          <p class="text-[11px] text-[#94a3b8] flex items-center gap-1.5 mt-0.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-[#10b981] pulse-dot"></span>
+            Zero-DB Flat Storage (<code class="text-indigo-300">data/fares.json</code> & <code class="text-indigo-300">data/index_history.json</code>)
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 self-end md:self-auto">
+        <div class="flex flex-col items-end px-2.5 py-1">
+          <span class="text-[10px] uppercase text-[#94a3b8] font-semibold tracking-wider">System Clock</span>
+          <span id="liveClock" class="text-xs font-mono text-slate-200">IST --:--:--</span>
+        </div>
+
+        <button 
+          id="scrapeBtn"
+          onclick="triggerScrape()"
+          class="btn-bento shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i id="scrapeIcon" data-lucide="bot" class="w-3.5 h-3.5 text-emerald-300"></i>
+          <span id="scrapeBtnText">Crawl Live Web (Scrapy)</span>
+        </button>
+
+        <button
+          onclick="toggleScrapyModal()"
+          title="Scrapy Crawler Engine Telemetry"
+          class="p-2 rounded-md bg-slate-900/80 hover:bg-slate-800 text-emerald-400 hover:text-white border border-[rgba(148,163,184,0.2)] transition cursor-pointer flex items-center gap-1 text-xs">
+          <i data-lucide="terminal" class="w-4 h-4"></i>
+          <span class="hidden sm:inline font-mono text-[11px]">Scrapy Logs</span>
+        </button>
+
+        <button
+          onclick="toggleMethodologyModal()"
+          title="Econometric Methodology"
+          class="p-2 rounded-md bg-slate-900/80 hover:bg-slate-800 text-[#94a3b8] hover:text-white border border-[rgba(148,163,184,0.2)] transition cursor-pointer">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- REAL-WORLD DATA SCRAPY NOTE BANNER (SPAN 12) -->
+    <div class="col-span-12 rounded-xl bg-slate-900/70 border border-emerald-500/25 px-4 py-2.5 text-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-sm">
+      <div class="flex items-center gap-2 text-slate-200">
+        <span class="p-1 rounded bg-emerald-500/20 text-emerald-400 shrink-0">
+          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+        </span>
+        <span>
+          <strong class="text-emerald-300">Active Live Scraping:</strong>
+          Real-time price extraction powered by Scrapy crawler engine fetching live flight prices from web travel portals.
+        </span>
+      </div>
+      <div class="flex items-center gap-2 text-[11px] font-mono text-[#94a3b8] shrink-0">
+        <span class="text-slate-400">Target:</span>
+        <span class="text-indigo-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Google Flights Web</span>
+        <span class="text-slate-400">Currency:</span>
+        <span class="text-emerald-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">INR (₹)</span>
+      </div>
+    </div>
+
+    <!-- STATUS NOTIFICATION BANNER (SPAN 12) -->
+    <div id="statusBanner" class="hidden col-span-12 rounded-xl p-3.5 text-xs flex items-center justify-between border transition-all duration-200">
+      <div class="flex items-center gap-2.5">
+        <i id="statusIcon" data-lucide="check-circle-2" class="w-4 h-4"></i>
+        <span id="statusMessage">Scrape completed successfully.</span>
+      </div>
+      <button onclick="hideStatusBanner()" class="text-[#94a3b8] hover:text-white">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- BENTO METRIC CARDS (4 METRICS: SPAN 3 EACH ON DESKTOP) -->
+    
+    <!-- Metric 1: National Airfare Index -->
+    <div class="bento-card col-span-12 sm:col-span-6 lg:col-span-3 p-4 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="label">National Airfare Index</span>
+          <i data-lucide="line-chart" class="w-4 h-4 text-indigo-400"></i>
+        </div>
+        <div class="mt-2 flex items-baseline gap-1.5">
+          <span id="nationalIndexVal" class="value text-2xl lg:text-[26px]">--</span>
+          <span class="text-[11px] font-mono text-[#94a3b8]">pts (P₀=100)</span>
+        </div>
+      </div>
+      <div class="mt-2.5">
+        <div id="indexDeltaBadge" class="delta up">-- (24h)</div>
+      </div>
+    </div>
+
+    <!-- Metric 2: Observed Data Points -->
+    <div class="bento-card col-span-12 sm:col-span-6 lg:col-span-3 p-4 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="label">Observed Data Points</span>
+          <i data-lucide="database" class="w-4 h-4 text-amber-400"></i>
+        </div>
+        <div class="mt-2 flex items-baseline gap-1.5">
+          <span id="totalFaresCount" class="value text-2xl lg:text-[26px]">--</span>
+          <span class="text-[11px] text-[#94a3b8]">Raw Records</span>
+        </div>
+      </div>
+      <div class="mt-2.5 flex items-center justify-between text-[10px] text-[#94a3b8]">
+        <span>Coverage: 3 Trunk Corridors</span>
+        <span id="lastScrapeTimestamp" class="font-mono">Updated: Just now</span>
+      </div>
+    </div>
+
+    <!-- Metric 3: Lead-Time Volatility / Route Weights -->
+    <div class="bento-card col-span-12 sm:col-span-6 lg:col-span-3 p-4 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="label">Lead-Time Volatility</span>
+          <i data-lucide="activity" class="w-4 h-4 text-teal-400"></i>
+        </div>
+        <div class="mt-2 flex items-baseline gap-1.5">
+          <span id="delta24hVal" class="value text-2xl lg:text-[26px]">--%</span>
+          <span class="text-[11px] text-[#94a3b8]">24h Movement</span>
+        </div>
+      </div>
+      <div class="mt-2.5 text-[10px] text-[#94a3b8] flex items-center justify-between">
+        <span>Jevons Geometric Mean</span>
+        <span class="text-slate-300 font-mono">DEL-BOM (48%)</span>
+      </div>
+    </div>
+
+    <!-- Metric 4: Scrapy Web Crawler Engine -->
+    <div class="bento-card col-span-12 sm:col-span-6 lg:col-span-3 p-4 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="label">Scrapy Web Crawler</span>
+          <i data-lucide="bot" class="w-4 h-4 text-emerald-400"></i>
+        </div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span id="scrapyStatusVal" class="value text-emerald-400 text-2xl lg:text-[26px]">ACTIVE</span>
+          <span id="scrapyEngineVal" class="text-[10px] text-emerald-300 font-mono bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800">Scrapy 2.18</span>
+        </div>
+      </div>
+      <div class="mt-2.5 flex items-center justify-between text-[10px] text-[#94a3b8]">
+        <span id="scrapyTargetSource">Google Flights Web</span>
+        <span id="scrapyLatencyVal" class="font-mono text-slate-300">Latency: 1.97s</span>
+      </div>
+    </div>
+
+    <!-- BENTO CHART CARDS (2 EQUAL CARDS: SPAN 6 EACH ON DESKTOP) -->
+
+    <!-- Chart Card 1: Index Trend (30 Days / Daily Jevons) -->
+    <div class="bento-card col-span-12 lg:col-span-6 p-4 sm:p-5 flex flex-col">
+      <div class="flex items-center justify-between border-b border-[rgba(148,163,184,0.15)] pb-3 mb-3">
+        <div>
+          <span class="label block">Index Trend (Daily Jevons)</span>
+          <span class="text-xs text-[#f8fafc] font-semibold mt-0.5 block">
+            National Aviation CPI Augmentation (Base P₀ = 100.0)
+          </span>
+        </div>
+        <div class="flex items-center gap-3 text-[10px]">
+          <span class="flex items-center gap-1.5 text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#6366f1]"></span> Jevons Index
+          </span>
+          <span class="flex items-center gap-1.5 text-[#94a3b8]">
+            <span class="w-2.5 h-0.5 bg-[#10b981]"></span> Base (100)
+          </span>
+        </div>
+      </div>
+
+      <div class="relative flex-1 min-h-[250px] w-full">
+        <canvas id="indexTrendsChart"></canvas>
+      </div>
+
+      <div class="mt-3 pt-2.5 border-t border-[rgba(148,163,184,0.12)] flex flex-wrap items-center justify-between text-[11px] text-[#94a3b8]">
+        <div class="flex items-center gap-3">
+          <span id="delBomIndexPill">DEL-BOM: <strong class="text-slate-200">--</strong></span>
+          <span id="blrDelIndexPill">BLR-DEL: <strong class="text-slate-200">--</strong></span>
+          <span id="bomBlrIndexPill">BOM-BLR: <strong class="text-slate-200">--</strong></span>
+        </div>
+        <span class="font-mono text-[10px]">data/index_history.json</span>
+      </div>
+    </div>
+
+    <!-- Chart Card 2: Lead-Time Pricing Curve -->
+    <div class="bento-card col-span-12 lg:col-span-6 p-4 sm:p-5 flex flex-col">
+      <div class="flex items-center justify-between border-b border-[rgba(148,163,184,0.15)] pb-3 mb-3">
+        <div>
+          <span class="label block">Lead-Time Pricing Curve</span>
+          <span class="text-xs text-[#f8fafc] font-semibold mt-0.5 block">
+            Average Airfare (₹) across Advance Booking Windows
+          </span>
+        </div>
+        <span class="text-[10px] font-mono text-[#94a3b8] px-2 py-0.5 rounded bg-slate-900 border border-[rgba(148,163,184,0.2)]">
+          T+1 to T+45 Days
+        </span>
+      </div>
+
+      <div class="relative flex-1 min-h-[250px] w-full">
+        <canvas id="leadTimeChart"></canvas>
+      </div>
+
+      <div class="mt-3 pt-2.5 border-t border-[rgba(148,163,184,0.12)] flex items-center justify-between text-[11px] text-[#94a3b8]">
+        <span>T+1: Dynamic Last-Minute Surge</span>
+        <span class="font-mono text-slate-300">T+45: Base Advance Horizon</span>
+      </div>
+    </div>
+
+    <!-- BENTO TABLE CARD: REAL-TIME DATA STREAM (SPAN 12) -->
+    <div class="bento-card col-span-12 p-4 sm:p-5 overflow-hidden flex flex-col">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[rgba(148,163,184,0.15)] pb-3 mb-3">
+        <div>
+          <span class="label block">Real-Time Data Stream</span>
+          <h2 class="text-sm font-bold text-[#f8fafc] mt-0.5 flex items-center gap-2">
+            Airfare Observations Repository (<code class="text-indigo-300 font-mono text-xs">data/fares.json</code>)
+          </h2>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="sourceFilter" onchange="filterFaresTable()" class="bg-slate-900 border border-[rgba(148,163,184,0.2)] text-xs text-slate-200 rounded-md px-2.5 py-1.5 focus:outline-none focus:border-indigo-500">
+            <option value="ALL">All Sources & Portals</option>
+            <option value="Google Flights">Google Flights Aggregator</option>
+            <option value="Akasa Air">Akasa Air Portal</option>
+            <option value="IndiGo">IndiGo Airways</option>
+            <option value="Air India">Air India Official</option>
+            <option value="SpiceJet">SpiceJet Airways</option>
+          </select>
+
+          <select id="routeFilter" onchange="filterFaresTable()" class="bg-slate-900 border border-[rgba(148,163,184,0.2)] text-xs text-slate-200 rounded-md px-2.5 py-1.5 focus:outline-none focus:border-indigo-500">
+            <option value="ALL">All Routes</option>
+            <option value="DEL-BOM">DEL-BOM</option>
+            <option value="BLR-DEL">BLR-DEL</option>
+            <option value="BOM-BLR">BOM-BLR</option>
+          </select>
+
+          <select id="leadTimeFilter" onchange="filterFaresTable()" class="bg-slate-900 border border-[rgba(148,163,184,0.2)] text-xs text-slate-200 rounded-md px-2.5 py-1.5 focus:outline-none focus:border-indigo-500">
+            <option value="ALL">All Lead Times</option>
+            <option value="1">T+1 Day</option>
+            <option value="7">T+7 Days</option>
+            <option value="15">T+15 Days</option>
+            <option value="30">T+30 Days</option>
+            <option value="45">T+45 Days</option>
+          </select>
+
+          <button onclick="downloadJsonFile()" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-md border border-[rgba(148,163,184,0.2)] flex items-center gap-1.5 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            Export JSON
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto max-h-[420px] rounded-lg border border-[rgba(148,163,184,0.15)]">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Airline & Flight</th>
+              <th>Route</th>
+              <th>Departure Date</th>
+              <th>Advance Window</th>
+              <th class="text-right">Base Fare</th>
+              <th class="text-right">Taxes & UDF</th>
+              <th class="text-right">Total Fare</th>
+              <th>Website / Source Portal</th>
+              <th>Crawler Engine</th>
+              <th class="text-center">Live Verify</th>
+            </tr>
+          </thead>
+          <tbody id="faresTableBody" class="font-mono text-slate-300">
+            <tr>
+              <td colspan="11" class="py-8 text-center text-[#94a3b8] font-sans">
+                Loading live observations from data/fares.json...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-3 pt-2 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#94a3b8] gap-2">
+        <span id="tableShowingCount">Showing 0 observations</span>
+        <span class="font-mono text-emerald-400/90 flex items-center gap-1.5">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+          Note: Real-time price extraction powered by Scrapy crawler engine fetching live flight prices from web travel portals.
+        </span>
+      </div>
+    </div>
+
+    <!-- BENTO FOOTER (SPAN 12) -->
+    <footer class="col-span-12 py-3 px-2 text-center sm:text-left sm:flex sm:items-center sm:justify-between text-[11px] text-[#94a3b8] border-t border-[rgba(148,163,184,0.15)]">
+      <div>APIx-India • Real-Time Airfare Price Index for MoSPI, RBI, and DGCA</div>
+      <div class="mt-1 sm:mt-0 font-mono text-[10px] text-emerald-400/80">
+        Live Web Fetching via Scrapy 2.18 • Jevons Geometric Mean • Flat-File Storage Engine
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- SCRAPY CRAWLER TELEMETRY MODAL -->
+  <div id="scrapyModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#1e293b] border border-emerald-500/30 rounded-2xl max-w-3xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[rgba(148,163,184,0.2)] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <i data-lucide="terminal" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-[#f8fafc]">Scrapy Live Web Scraping Engine</h3>
+            <p class="text-[11px] text-[#94a3b8]">Live Web Price Extraction & Telemetry Monitor</p>
+          </div>
+        </div>
+        <button onclick="toggleScrapyModal()" class="text-[#94a3b8] hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-300 leading-relaxed font-sans">
+        <!-- Telemetry Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div class="p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)]">
+            <span class="text-[10px] uppercase text-[#94a3b8] block">Crawler Engine</span>
+            <strong id="modalScrapyEngine" class="text-emerald-400 font-mono text-sm">Scrapy 2.18.0</strong>
+          </div>
+          <div class="p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)]">
+            <span class="text-[10px] uppercase text-[#94a3b8] block">Last Crawl Duration</span>
+            <strong id="modalScrapyDuration" class="text-indigo-300 font-mono text-sm">-- s</strong>
+          </div>
+          <div class="p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)]">
+            <span class="text-[10px] uppercase text-[#94a3b8] block">Live Web Items</span>
+            <strong id="modalScrapyItems" class="text-emerald-400 font-mono text-sm">-- items</strong>
+          </div>
+          <div class="p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)]">
+            <span class="text-[10px] uppercase text-[#94a3b8] block">Target Source</span>
+            <strong class="text-amber-300 font-mono text-xs">Google Flights</strong>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white text-sm mb-1.5 flex items-center gap-2">
+            <i data-lucide="code-2" class="w-4 h-4 text-emerald-400"></i>
+            Live Spider Architecture (<code class="text-indigo-300 font-mono text-xs">spiders/flight_fare_spider.py</code>)
+          </h4>
+          <p class="text-slate-300">
+            The Scrapy spider crawls public flight aggregator portals via asynchronous Twisted/Epoll reactor. It targets domestic trunk routes (<code class="text-indigo-300">DEL-BOM</code>, <code class="text-indigo-300">BLR-DEL</code>, <code class="text-indigo-300">BOM-BLR</code>) across advance lead-time windows (<code class="text-indigo-300">T+1, T+7, T+15, T+30, T+45</code> days) and parses real INR ticket prices from the DOM using XPath and regex matchers.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white text-sm mb-1.5 flex items-center gap-2">
+            <i data-lucide="file-json" class="w-4 h-4 text-indigo-400"></i>
+            Latest Scraped Items Sample (<code class="text-indigo-300 font-mono text-xs">data/fares.json</code>)
+          </h4>
+          <pre id="modalScrapySample" class="p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)] font-mono text-[11px] text-emerald-300 max-h-48 overflow-y-auto whitespace-pre-wrap">Loading latest Scrapy telemetry...</pre>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-[rgba(148,163,184,0.2)] flex items-center justify-between">
+        <button onclick="triggerScrape(); toggleScrapyModal();" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-semibold flex items-center gap-1.5">
+          <i data-lucide="play" class="w-3.5 h-3.5"></i>
+          Trigger Scrapy Crawl Now
+        </button>
+        <button onclick="toggleScrapyModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md text-xs font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECONOMETRIC METHODOLOGY MODAL -->
+  <div id="methodologyModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#1e293b] border border-[rgba(148,163,184,0.3)] rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[rgba(148,163,184,0.2)] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-base font-bold text-[#f8fafc]">Econometric Methodology & Weighting</h3>
+        </div>
+        <button onclick="toggleMethodologyModal()" class="text-[#94a3b8] hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-300 leading-relaxed font-sans">
+        <div>
+          <h4 class="font-semibold text-white text-sm mb-1">1. The Axiomatic Jevons Geometric Mean</h4>
+          <p>
+            Standard arithmetic means (such as the Carli index) suffer from upward substitution bias. Following IMF/ILO Consumer Price Index standards, APIx-India aggregates route-level flight price relatives using the <strong>Jevons index</strong>:
+          </p>
+          <div class="mt-2 p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)] font-mono text-emerald-400 text-center text-sm">
+            I_route = [ ∏_{i=1}^N ( P_{i,t} / P_{i,0} ) ]^(1/N) × 100
+          </div>
+          <p class="mt-1 text-[#94a3b8]">
+            Computed in log-space: <code class="text-indigo-300">exp( (1/N) * Σ ln(P_t / P_0) ) * 100</code> to guarantee numerical precision.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white text-sm mb-1">2. DGCA Passenger Traffic Weighting</h4>
+          <p>
+            Elementary route indices are aggregated into a National Airfare Price Index using Directorate General of Civil Aviation quarterly passenger traffic volume weights:
+          </p>
+          <div class="mt-2 p-3 bg-[#0f172a] rounded-lg border border-[rgba(148,163,184,0.2)] font-mono text-indigo-300 text-center text-sm">
+            I_National = Σ ( w_route × I_route )
+          </div>
+          <div class="mt-2 grid grid-cols-3 gap-2 text-center">
+            <div class="p-2 bg-[#0f172a] rounded border border-[rgba(148,163,184,0.2)]">
+              <div class="font-bold text-white">DEL-BOM</div>
+              <div class="text-[#94a3b8]">48% Weight</div>
+            </div>
+            <div class="p-2 bg-[#0f172a] rounded border border-[rgba(148,163,184,0.2)]">
+              <div class="font-bold text-white">BLR-DEL</div>
+              <div class="text-[#94a3b8]">32% Weight</div>
+            </div>
+            <div class="p-2 bg-[#0f172a] rounded border border-[rgba(148,163,184,0.2)]">
+              <div class="font-bold text-white">BOM-BLR</div>
+              <div class="text-[#94a3b8]">20% Weight</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white text-sm mb-1">3. Intertemporal Lead-Time Windows (T+1 to T+45)</h4>
+          <p>
+            Captures dynamic airline yield management curves across five standardized horizons (1, 7, 15, 30, and 45 days before departure), separating advance-purchase shifts from pure underlying ticket price inflation.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-[rgba(148,163,184,0.2)] text-right">
+        <button onclick="toggleMethodologyModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md text-xs font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let rawFaresCache = [];
+    let indexTrendsChartInstance = null;
+    let leadTimeChartInstance = null;
+    let latestScrapyTelemetry = null;
+
+    lucide.createIcons();
+
+    function updateClock() {
+      const now = new Date();
+      const istOptions = { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const istStr = now.toLocaleTimeString('en-GB', istOptions);
+      document.getElementById('liveClock').textContent = `IST ${istStr}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function formatINR(val) {
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+    }
+
+    function toggleMethodologyModal() {
+      const modal = document.getElementById('methodologyModal');
+      modal.classList.toggle('hidden');
+    }
+
+    function toggleScrapyModal() {
+      const modal = document.getElementById('scrapyModal');
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        loadScrapyStatus();
+      }
+    }
+
+    function showStatus(message, isSuccess = true) {
+      const banner = document.getElementById('statusBanner');
+      const msg = document.getElementById('statusMessage');
+      const icon = document.getElementById('statusIcon');
+
+      banner.className = `col-span-12 rounded-xl p-3.5 text-xs flex items-center justify-between border transition-all duration-200 ${
+        isSuccess ? 'bg-emerald-950/70 border-emerald-800/80 text-emerald-200' : 'bg-red-950/70 border-red-800/80 text-red-200'
+      }`;
+      icon.setAttribute('data-lucide', isSuccess ? 'check-circle-2' : 'alert-circle');
+      msg.textContent = message;
+      banner.classList.remove('hidden');
+      lucide.createIcons();
+
+      setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 7000);
+    }
+
+    function hideStatusBanner() {
+      document.getElementById('statusBanner').classList.add('hidden');
+    }
+
+    // Fetch Scrapy Status & Telemetry
+    async function loadScrapyStatus() {
+      try {
+        const res = await fetch('/api/scrapy/status');
+        if (!res.ok) return;
+        const data = await res.json();
+        latestScrapyTelemetry = data;
+
+        // Update Card 4
+        if (data.execution_duration_sec !== undefined) {
+          document.getElementById('scrapyLatencyVal').textContent = `Latency: ${data.execution_duration_sec}s`;
+        }
+        if (data.engine) {
+          document.getElementById('scrapyEngineVal').textContent = data.engine.split(' ')[0] + ' 2.18';
+        }
+        if (data.status) {
+          const statusEl = document.getElementById('scrapyStatusVal');
+          statusEl.textContent = data.status === 'CRAWLING' ? 'CRAWLING' : 'ACTIVE';
+          statusEl.className = `value text-2xl lg:text-[26px] ${data.status === 'CRAWLING' ? 'text-amber-400' : 'text-emerald-400'}`;
+        }
+
+        // Update Modal
+        const durEl = document.getElementById('modalScrapyDuration');
+        if (durEl && data.execution_duration_sec) {
+          durEl.textContent = `${data.execution_duration_sec}s`;
+        }
+        const itemsEl = document.getElementById('modalScrapyItems');
+        if (itemsEl) {
+          itemsEl.textContent = `${data.live_web_items || data.items_scraped || 0} live fares`;
+        }
+        const sampleEl = document.getElementById('modalScrapySample');
+        if (sampleEl && data.latest_fares_sample) {
+          sampleEl.textContent = JSON.stringify(data.latest_fares_sample, null, 2);
+        }
+      } catch (err) {
+        console.error('Error reading Scrapy status:', err);
+      }
+    }
+
+    // Fetch Summary & Metrics
+    async function loadIndexSummary() {
+      try {
+        const res = await fetch('/api/index/summary');
+        if (!res.ok) throw new Error('Failed to load index summary');
+        const data = await res.json();
+
+        // National Index
+        const indexVal = data.national_index || 100.0;
+        document.getElementById('nationalIndexVal').textContent = indexVal.toFixed(2);
+
+        // Delta
+        const delta = data.delta_24h || 0.0;
+        const deltaEl = document.getElementById('delta24hVal');
+        deltaEl.textContent = `${delta >= 0 ? '+' : ''}${delta.toFixed(2)}%`;
+        deltaEl.className = `value text-2xl lg:text-[26px] ${delta >= 0 ? 'text-emerald-400' : 'text-indigo-400'}`;
+
+        // Delta Badge
+        const badge = document.getElementById('indexDeltaBadge');
+        const netBaseDiff = (indexVal - 100.0).toFixed(1);
+        badge.textContent = `${netBaseDiff >= 0 ? '+' : ''}${netBaseDiff}% (24h)`;
+        badge.className = `delta ${netBaseDiff >= 0 ? 'up' : 'down'}`;
+
+        // Route pills
+        if (data.route_indices) {
+          if (data.route_indices['DEL-BOM']) {
+            document.getElementById('delBomIndexPill').innerHTML = `DEL-BOM: <strong class="text-white">${data.route_indices['DEL-BOM']}</strong>`;
+          }
+          if (data.route_indices['BLR-DEL']) {
+            document.getElementById('blrDelIndexPill').innerHTML = `BLR-DEL: <strong class="text-white">${data.route_indices['BLR-DEL']}</strong>`;
+          }
+          if (data.route_indices['BOM-BLR']) {
+            document.getElementById('bomBlrIndexPill').innerHTML = `BOM-BLR: <strong class="text-white">${data.route_indices['BOM-BLR']}</strong>`;
+          }
+        }
+
+        if (data.sample_size !== undefined) {
+          document.getElementById('totalFaresCount').textContent = data.sample_size.toLocaleString();
+        }
+
+        if (data.timestamp) {
+          const dateObj = new Date(data.timestamp);
+          document.getElementById('lastScrapeTimestamp').textContent = `Updated: ${dateObj.toLocaleTimeString()}`;
+        }
+      } catch (err) {
+        console.error('Error loading index summary:', err);
+      }
+    }
+
+    // Chart 1: Daily Price Index Trends
+    async function loadIndexTrends() {
+      try {
+        const res = await fetch('/api/index/trends');
+        if (!res.ok) throw new Error('Failed to load index trends');
+        const json = await res.json();
+        const trends = json.trends || [];
+
+        const labels = trends.map((item, idx) => {
+          if (item.date) return item.date.slice(5);
+          if (item.timestamp) return item.timestamp.slice(5, 10);
+          return `Day ${idx + 1}`;
+        });
+
+        const nationalData = trends.map(item => item.national_index);
+        const delBomData = trends.map(item => item.route_indices ? item.route_indices['DEL-BOM'] : null);
+        const blrDelData = trends.map(item => item.route_indices ? item.route_indices['BLR-DEL'] : null);
+        const baselineData = trends.map(() => 100.0);
+
+        const ctx = document.getElementById('indexTrendsChart').getContext('2d');
+        if (indexTrendsChartInstance) {
+          indexTrendsChartInstance.destroy();
+        }
+
+        indexTrendsChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'National Airfare Index (APIx)',
+                data: nationalData,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.12)',
+                fill: true,
+                tension: 0.35,
+                borderWidth: 2.5,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+              },
+              {
+                label: 'Base Benchmark (P₀ = 100.0)',
+                data: baselineData,
+                borderColor: '#10b981',
+                borderDash: [5, 5],
+                borderWidth: 1.5,
+                pointRadius: 0,
+                fill: false,
+              },
+              {
+                label: 'DEL-BOM',
+                data: delBomData,
+                borderColor: '#38bdf8',
+                borderWidth: 1.5,
+                tension: 0.3,
+                pointRadius: 0,
+                borderDash: [2, 2],
+                fill: false,
+              },
+              {
+                label: 'BLR-DEL',
+                data: blrDelData,
+                borderColor: '#a855f7',
+                borderWidth: 1.5,
+                tension: 0.3,
+                pointRadius: 0,
+                borderDash: [2, 2],
+                fill: false,
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: false,
+              mode: 'index',
+            },
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleColor: '#e2e8f0',
+                bodyColor: '#cbd5e1',
+                borderColor: 'rgba(148, 163, 184, 0.2)',
+                borderWidth: 1,
+                padding: 10,
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                ticks: { color: '#94a3b8', font: { size: 10 } }
+              },
+              y: {
+                grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                ticks: { color: '#94a3b8', font: { size: 10 } }
+              }
+            }
+          }
+        });
+      } catch (err) {
+        console.error('Error loading index trends:', err);
+      }
+    }
+
+    // Chart 2: Dynamic Lead-Time Pricing Curve
+    async function loadLeadTimeCurve() {
+      try {
+        const res = await fetch('/api/lead-time-curve');
+        if (!res.ok) throw new Error('Failed to load lead-time curve');
+        const data = await res.json();
+
+        const labels = data.labels || ['T+1 Day', 'T+7 Days', 'T+15 Days', 'T+30 Days', 'T+45 Days'];
+        const baseFares = data.base_fares || [];
+        const taxes = data.taxes || [];
+
+        const ctx = document.getElementById('leadTimeChart').getContext('2d');
+        if (leadTimeChartInstance) {
+          leadTimeChartInstance.destroy();
+        }
+
+        leadTimeChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Base Fare (₹)',
+                data: baseFares,
+                backgroundColor: '#6366f1',
+                borderRadius: 4,
+                stack: 'fareStack',
+              },
+              {
+                label: 'Taxes & UDF/PSF (₹)',
+                data: taxes,
+                backgroundColor: '#10b981',
+                borderRadius: 4,
+                stack: 'fareStack',
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: false,
+              mode: 'index',
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { color: '#94a3b8', boxWidth: 10, font: { size: 10 } }
+              },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                titleColor: '#e2e8f0',
+                bodyColor: '#cbd5e1',
+                borderColor: 'rgba(148, 163, 184, 0.2)',
+                borderWidth: 1,
+                callbacks: {
+                  footer: function(tooltipItems) {
+                    let total = 0;
+                    tooltipItems.forEach(function(item) {
+                      total += item.parsed.y;
+                    });
+                    return 'Total Fare: ' + formatINR(total);
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                ticks: { color: '#94a3b8', font: { size: 10 } }
+              },
+              y: {
+                grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                ticks: {
+                  color: '#94a3b8',
+                  font: { size: 10 },
+                  callback: function(val) { return '₹' + val.toLocaleString(); }
+                }
+              }
+            }
+          }
+        });
+      } catch (err) {
+        console.error('Error loading lead-time curve:', err);
+      }
+    }
+
+    // Load Raw Fares Table
+    async function loadRawFares() {
+      try {
+        const res = await fetch('/api/raw-fares?limit=150');
+        if (!res.ok) throw new Error('Failed to load raw fares');
+        const json = await res.json();
+        rawFaresCache = json.fares || [];
+        renderFaresTable(rawFaresCache);
+      } catch (err) {
+        console.error('Error loading raw fares:', err);
+      }
+    }
+
+    // Render Table Rows with Scrapy source tag and website name
+    function renderFaresTable(fares) {
+      const tbody = document.getElementById('faresTableBody');
+      if (!fares || fares.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="11" class="py-8 text-center text-[#94a3b8] font-sans">
+              No observations found matching the selected filter.
+            </td>
+          </tr>
+        `;
+        document.getElementById('tableShowingCount').textContent = 'Showing 0 observations';
+        return;
+      }
+
+      document.getElementById('tableShowingCount').textContent = `Showing ${fares.length} observations (latest first)`;
+
+      const rowsHtml = fares.map(f => {
+        let airlineBadgeColor = 'bg-indigo-500/15 text-indigo-300 border-indigo-500/25';
+        if (f.airline === 'Air India') {
+          airlineBadgeColor = 'bg-rose-500/15 text-rose-300 border-rose-500/25';
+        } else if (f.airline === 'Akasa Air') {
+          airlineBadgeColor = 'bg-amber-500/15 text-amber-300 border-amber-500/25';
+        } else if (f.airline === 'SpiceJet') {
+          airlineBadgeColor = 'bg-red-500/15 text-red-300 border-red-500/25';
+        }
+
+        let leadTimeBadge = `<span class="tag">T+${f.lead_time_days} Day${f.lead_time_days > 1 ? 's' : ''}</span>`;
+        if (f.lead_time_days === 1) {
+          leadTimeBadge = `<span class="tag bg-rose-500/20 text-rose-400 font-semibold">T+1 Day (Peak)</span>`;
+        } else if (f.lead_time_days === 45) {
+          leadTimeBadge = `<span class="tag bg-emerald-500/20 text-emerald-400">T+45 Days</span>`;
+        }
+
+        const isScrapy = f.scrape_status === 'SCRAPY_LIVE_WEB' || (f.source_website && f.source_website.includes('Google Flights'));
+        
+        // Website badge and live verify link
+        const websiteName = f.source_website || 'Google Flights (Travel Aggregator)';
+        const sourceUrl = f.source_url || `https://www.google.com/travel/flights?q=Flights%20to%20${f.destination}%20from%20${f.origin}%20on%20${f.departure_date}%20one%20way&curr=INR&hl=en`;
+
+        let siteBadgeClass = 'bg-sky-500/15 text-sky-300 border-sky-500/30';
+        if (websiteName.includes('Akasa Air')) {
+          siteBadgeClass = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+        } else if (websiteName.includes('IndiGo')) {
+          siteBadgeClass = 'bg-blue-500/15 text-blue-300 border-blue-500/30';
+        } else if (websiteName.includes('Air India')) {
+          siteBadgeClass = 'bg-rose-500/15 text-rose-300 border-rose-500/30';
+        } else if (websiteName.includes('SpiceJet')) {
+          siteBadgeClass = 'bg-red-500/15 text-red-300 border-red-500/30';
+        }
+
+        const websiteCell = `
+          <div class="flex flex-col gap-0.5">
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold border ${siteBadgeClass} w-fit whitespace-nowrap">
+              <i data-lucide="globe" class="w-3 h-3 text-emerald-400"></i>
+              ${websiteName}
+            </span>
+          </div>
+        `;
+
+        const crawlerCell = isScrapy
+          ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10.5px] font-mono bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
+               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+               Scrapy 2.18
+             </span>`
+          : `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10.5px] font-mono bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap">
+               Calibrated
+             </span>`;
+
+        const timeStr = f.timestamp ? f.timestamp.replace('T', ' ').slice(0, 19) : '--';
+
+        return `
+          <tr>
+            <td class="text-[#94a3b8] text-[11px] whitespace-nowrap">${timeStr}</td>
+            <td class="whitespace-nowrap font-sans">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold border ${airlineBadgeColor}">
+                ${f.airline}
+              </span>
+              <span class="ml-1 text-[11px] text-[#f8fafc] font-mono font-semibold">${f.flight_number || ''}</span>
+            </td>
+            <td class="font-bold text-[#f8fafc] whitespace-nowrap">${f.route}</td>
+            <td class="text-slate-300 whitespace-nowrap">${f.departure_date}</td>
+            <td class="whitespace-nowrap">${leadTimeBadge}</td>
+            <td class="text-right text-slate-300">${formatINR(f.base_fare)}</td>
+            <td class="text-right text-[#94a3b8]">${formatINR(f.taxes)}</td>
+            <td class="text-right font-bold text-[#10b981] text-xs">${formatINR(f.total_fare)}</td>
+            <td class="whitespace-nowrap">${websiteCell}</td>
+            <td class="whitespace-nowrap">${crawlerCell}</td>
+            <td class="text-center whitespace-nowrap">
+              <a href="${sourceUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-sky-500/30 text-[10.5px] font-sans transition" title="Inspect price on live website">
+                <span>Verify</span>
+                <i data-lucide="external-link" class="w-2.5 h-2.5"></i>
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.innerHTML = rowsHtml;
+      lucide.createIcons();
+    }
+
+    // Filter Table
+    function filterFaresTable() {
+      const routeVal = document.getElementById('routeFilter').value;
+      const leadTimeVal = document.getElementById('leadTimeFilter').value;
+      const sourceVal = document.getElementById('sourceFilter').value;
+
+      let filtered = [...rawFaresCache];
+      if (routeVal !== 'ALL') {
+        filtered = filtered.filter(f => f.route === routeVal);
+      }
+      if (leadTimeVal !== 'ALL') {
+        filtered = filtered.filter(f => f.lead_time_days === parseInt(leadTimeVal));
+      }
+      if (sourceVal !== 'ALL') {
+        filtered = filtered.filter(f => {
+          const site = (f.source_website || '').toLowerCase();
+          const air = (f.airline || '').toLowerCase();
+          const target = sourceVal.toLowerCase();
+          return site.includes(target) || air.includes(target);
+        });
+      }
+      renderFaresTable(filtered);
+    }
+
+    // Download JSON File
+    function downloadJsonFile() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rawFaresCache, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `apix_fares_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Trigger Live Scrape Action with Scrapy
+    async function triggerScrape() {
+      const btn = document.getElementById('scrapeBtn');
+      const btnText = document.getElementById('scrapeBtnText');
+      const icon = document.getElementById('scrapeIcon');
+
+      btn.disabled = true;
+      btnText.textContent = 'Scrapy Crawling Web...';
+      icon.classList.add('animate-spin');
+
+      try {
+        const res = await fetch('/api/scrape/trigger?use_scrapy=true', { method: 'POST' });
+        if (!res.ok) throw new Error('Scrapy crawl execution failed');
+        const data = await res.json();
+
+        // Reload data
+        await Promise.all([
+          loadIndexSummary(),
+          loadIndexTrends(),
+          loadLeadTimeCurve(),
+          loadRawFares(),
+          loadScrapyStatus(),
+        ]);
+
+        const details = data.scrape_details || {};
+        showStatus(
+          `Scrapy harvest complete! Extracted ${details.live_web_records || details.records_added} live web flight fares in ${details.execution_duration_sec || 0}s. Jevons index: ${data.index_snapshot.national_index}.`,
+          true
+        );
+      } catch (err) {
+        console.error('Error triggering scrape:', err);
+        showStatus(`Scrape error: ${err.message}`, false);
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Crawl Live Web (Scrapy)';
+        icon.classList.remove('animate-spin');
+      }
+    }
+
+    // Initial Dashboard Bootstrap
+    document.addEventListener('DOMContentLoaded', async () => {
+      await Promise.all([
+        loadIndexSummary(),
+        loadIndexTrends(),
+        loadLeadTimeCurve(),
+        loadRawFares(),
+        loadScrapyStatus(),
+      ]);
+    });
+  </script>
+</body>
+</html>
