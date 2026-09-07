@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,19 +97,12 @@
       background-color: var(--bg);
       color: var(--text-main);
       transition: background-color 0.2s ease, color 0.2s ease;
-      min-height: 100vh;
-      overflow-x: hidden;
-      overflow-y: auto;
     }
 
     .bento-container {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 16px;
-      width: 100%;
-      max-width: 1240px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .bento-card {
@@ -242,10 +235,10 @@
     ::-webkit-scrollbar-thumb:hover { background: #64748b80; }
   </style>
 </head>
-<body class="antialiased p-3 sm:p-5 lg:p-6 box-border">
+<body class="min-h-full flex flex-col antialiased p-3 sm:p-5 lg:p-6 box-border">
 
-  <!-- BENTO MASTER CONTAINER (Fixed proportional bounds with natural responsive zoom) -->
-  <div class="bento-container">
+  <!-- BENTO MASTER CONTAINER -->
+  <div class="bento-container max-w-7xl w-full mx-auto flex-1">
 
     <!-- BENTO HEADER -->
     <header class="bento-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-xs">
@@ -414,7 +407,7 @@
         </div>
       </div>
 
-      <div class="relative w-full h-[280px]">
+      <div class="relative flex-1 min-h-[240px] w-full">
         <canvas id="indexTrendsChart"></canvas>
       </div>
 
@@ -440,7 +433,7 @@
         </span>
       </div>
 
-      <div class="relative w-full h-[280px]">
+      <div class="relative flex-1 min-h-[240px] w-full">
         <canvas id="leadTimeChart"></canvas>
       </div>
 
