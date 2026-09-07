@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build:fallback": "tsx -e \"import fs from 'fs'; import { calculateEconometricIndicators, readIndexHistory, computeLeadTimeCurve, readFares, readScrapyStatus } from './src/econometrics'; fs.writeFileSync('public/fallback_data.js', 'window.FALLBACK_SUMMARY = ' + JSON.stringify(calculateEconometricIndicators()) + '; window.FALLBACK_TRENDS = ' + JSON.stringify(readIndexHistory()) + '; window.FALLBACK_LEAD_TIME = ' + JSON.stringify(computeLeadTimeCurve()) + '; window.FALLBACK_FARES = ' + JSON.stringify(readFares(true).slice(0, 150)) + '; window.FALLBACK_SCRAPY_STATUS = ' + JSON.stringify(readScrapyStatus()) + ';', 'utf-8');\"",
+    "build": "npm run build:fallback && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist",
