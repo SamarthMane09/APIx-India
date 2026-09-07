@@ -14,7 +14,17 @@ from typing import Any, Dict, Generator, List
 
 import scrapy
 
-logger = logging.getLogger("apix_scrapy")
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
+def get_ist_now() -> datetime:
+    """Return current datetime in Indian Standard Time (IST, UTC+5:30)."""
+    return datetime.now(timezone.utc).astimezone(IST)
+
+
+def get_ist_today() -> date:
+    """Return today's date in Indian Standard Time (IST)."""
+    return get_ist_now().date()
 
 AIRLINE_CODES = {
     "IndiGo": "6E",
@@ -84,7 +94,7 @@ class FlightFareSpider(scrapy.Spider):
         if not self.selected_lead_times:
             self.selected_lead_times = [1, 7, 15, 30, 45]
 
-        today = date.today()
+        today = get_ist_today()
         urls = []
         for route_str in self.selected_routes:
             parts = route_str.split("-")
@@ -122,18 +132,18 @@ class FlightFareSpider(scrapy.Spider):
         if match:
             dest, origin, dep_date_str = match.groups()
         else:
-            dest, origin, dep_date_str = "BOM", "DEL", date.today().isoformat()
+            dest, origin, dep_date_str = "BOM", "DEL", get_ist_today().isoformat()
 
         route = f"{origin}-{dest}"
         try:
             dep_date = datetime.strptime(dep_date_str, "%Y-%m-%d").date()
-            lead_time = (dep_date - date.today()).days
+            lead_time = (dep_date - get_ist_today()).days
             if lead_time < 1:
                 lead_time = 1
         except Exception:
             lead_time = 7
 
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = get_ist_now().isoformat()
         scraped_count = 0
 
         # Query all individual flight cards in DOM
@@ -184,6 +194,15 @@ class FlightFareSpider(scrapy.Spider):
                         airline = known
                         break
 
+            # Extract timing and flight details
+            dep_time_match = re.search(r"Departure time:\s*([0-9:APMapm\s\u202f]+)", card_aria)
+            arr_time_match = re.search(r"Arrival time:\s*([0-9:APMapm\s\u202f]+)", card_aria)
+            dur_match = re.search(r"Total duration\s+([0-9a-z\s]+?)\.", card_aria)
+            dep_time = dep_time_match.group(1).strip().replace("\u202f", " ") if dep_time_match else ""
+            arr_time = arr_time_match.group(1).strip().replace("\u202f", " ") if arr_time_match else ""
+            duration = dur_match.group(1).strip() if dur_match else ""
+            stops = "Nonstop" if ("Nonstop" in card_aria or "Nonstop" in card_html or "Nonstop" in card_text) else "Connecting"
+
             # Parse authentic flight number directly from DOM
             expected_prefix = AIRLINE_CODES.get(airline, "6E")
             flight_matches = re.findall(r"\b(6E|AI|QP|SG|UK|IX)[ -]?([0-9]{3,4})\b", card_html)
@@ -204,7 +223,7 @@ class FlightFareSpider(scrapy.Spider):
                     flight_num = f"{expected_prefix}-{1100 + (scraped_count % 30)}"
 
             # Prevent duplicate cards in same query
-            card_key = f"{flight_num}_{total_fare}"
+            card_key = f"{flight_num}_{dep_time}_{total_fare}"
             if card_key in seen_flights:
                 continue
             seen_flights.add(card_key)
@@ -234,6 +253,10 @@ class FlightFareSpider(scrapy.Spider):
                 "destination": dest,
                 "route": route,
                 "departure_date": dep_date_str,
+                "departure_time": dep_time,
+                "arrival_time": arr_time,
+                "duration": duration,
+                "stops": stops,
                 "lead_time_days": lead_time,
                 "base_fare": base_fare,
                 "taxes": taxes,
@@ -250,7 +273,7 @@ class FlightFareSpider(scrapy.Spider):
             scraped_count += 1
             yield item
 
-            if scraped_count >= 6:
+            if scraped_count >= 10:
                 break
 
         # Fallback to aria-labels if list items were empty
@@ -291,6 +314,13 @@ class FlightFareSpider(scrapy.Spider):
                         else:
                             flight_num = f"{expected_prefix}-1101"
 
+                        time_m = re.search(r"Leaves.*?at\s+([0-9:APMapm\s\u202f]+).*?arrives.*?at\s+([0-9:APMapm\s\u202f]+)", label)
+                        dep_t = time_m.group(1).strip().replace("\u202f", " ") if time_m else ""
+                        arr_t = time_m.group(2).strip().replace("\u202f", " ") if time_m else ""
+                        dur_m = re.search(r"duration\s+([0-9a-z\s]+?)\.", label)
+                        dur_t = dur_m.group(1).strip() if dur_m else ""
+                        stops_t = "Nonstop" if "Nonstop" in label else "Connecting"
+
                         item = {
                             "timestamp": now_iso,
                             "airline": airline,
@@ -299,6 +329,10 @@ class FlightFareSpider(scrapy.Spider):
                             "destination": dest,
                             "route": route,
                             "departure_date": dep_date_str,
+                            "departure_time": dep_t,
+                            "arrival_time": arr_t,
+                            "duration": dur_t,
+                            "stops": stops_t,
                             "lead_time_days": lead_time,
                             "base_fare": base_fare,
                             "taxes": taxes,

@@ -20,6 +20,18 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import httpx
 
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
+def get_ist_now() -> datetime:
+    """Return current datetime in Indian Standard Time (IST, UTC+5:30)."""
+    return datetime.now(timezone.utc).astimezone(IST)
+
+
+def get_ist_today() -> date:
+    """Return today's date in Indian Standard Time (IST)."""
+    return get_ist_now().date()
+
 from econometrics import (
     DATA_DIR,
     FARES_FILE,
@@ -132,7 +144,7 @@ def generate_simulated_flight_fare(
     base_fare, taxes, total_fare = compute_tax_breakdown(calculated_base, origin)
     
     departure_date = (base_date + timedelta(days=lead_time)).isoformat()
-    now_iso = datetime.now(timezone.utc).isoformat()
+    now_iso = get_ist_now().isoformat()
     
     return {
         "timestamp": now_iso,
@@ -216,7 +228,7 @@ async def run_scrape_batch(demo_mode: bool = True) -> Dict[str, Any]:
     - Appends all collected records directly into data/fares.json atomically.
     """
     ensure_data_directory()
-    today = date.today()
+    today = get_ist_today()
     new_observations: List[Dict[str, Any]] = []
     live_count = 0
     fallback_count = 0
@@ -254,7 +266,7 @@ async def run_scrape_batch(demo_mode: bool = True) -> Dict[str, Any]:
 
     return {
         "status": "success",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": get_ist_now().isoformat(),
         "records_added": len(new_observations),
         "live_records": live_count,
         "fallback_records": fallback_count,

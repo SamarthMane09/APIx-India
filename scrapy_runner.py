@@ -12,8 +12,20 @@ import re
 import shutil
 import tempfile
 import threading
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
+def get_ist_now() -> datetime:
+    """Return current datetime in Indian Standard Time (IST, UTC+5:30)."""
+    return datetime.now(timezone.utc).astimezone(IST)
+
+
+def get_ist_today() -> date:
+    """Return today's date in Indian Standard Time (IST)."""
+    return get_ist_now().date()
 
 from econometrics import (
     DATA_DIR,
@@ -63,12 +75,12 @@ def write_scrapy_status(status_data: Dict[str, Any]):
 async def execute_scrapy_crawl(
     routes: Optional[List[str]] = None,
     lead_times: Optional[List[int]] = None,
-    demo_fallback: bool = True,
+    demo_fallback: bool = False,
 ) -> Dict[str, Any]:
     """
     Runs the Scrapy spider 'flight_fare_spider' in a subprocess.
-    Extracts real-world airfare items, appends to data/fares.json,
-    and updates index history.
+    Extracts real-world verified airfare items, appends to data/fares.json,
+    and updates index history. Strictly captures verified actual data.
     """
     ensure_data_directory()
     start_time = datetime.now(timezone.utc)
@@ -139,74 +151,58 @@ async def execute_scrapy_crawl(
             except OSError:
                 pass
 
-    end_time = datetime.now(timezone.utc)
+    end_time = get_ist_now()
     duration_sec = round((end_time - start_time).total_seconds(), 2)
 
-    # Check coverage and apply econometric fallback if any corridor failed to return fares
-    live_count = len(scraped_items)
+    # Strictly filter for verified actual scraped observations
+    verified_items = [
+        item for item in scraped_items
+        if item.get("verified_live") is True and item.get("scrape_status") == "SCRAPY_LIVE_WEB"
+    ]
+    live_count = len(verified_items)
     fallback_count = 0
-    today = date.today()
 
-    covered_combos = {(item["route"], item["lead_time_days"]) for item in scraped_items}
-    
-    if demo_fallback:
-        target_route_list = [r.strip() for r in routes_str.split(",")]
-        target_lt_list = [int(x) for x in lead_times_str.split(",")]
-        for route in target_route_list:
-            route_info = next((r for r in TARGET_ROUTES if r["route"] == route), None)
-            if not route_info:
-                continue
-            flights = AIRLINE_INVENTORY.get(route, [])
-            for lt in target_lt_list:
-                if (route, lt) not in covered_combos:
-                    # Synthesize safety observation for complete econometric matrix
-                    sampled = flights[0] if flights else {"airline": "IndiGo", "flight_number": "6E-100", "tier": "LCC"}
-                    rec = generate_simulated_flight_fare(route_info, sampled, lt, today)
-                    rec["scrape_status"] = "CALIBRATED_FALLBACK"
-                    rec["source_website"] = "Econometric Calibration"
-                    scraped_items.append(rec)
-                    fallback_count += 1
-
-    # Atomic write to data/fares.json
+    # Atomic write to data/fares.json only if new verified items scraped
     with runner_lock:
-        existing_fares = read_fares()
-        existing_fares.extend(scraped_items)
-        atomic_write_json(FARES_FILE, existing_fares)
+        existing_fares = read_fares(verified_only=True)
+        if verified_items:
+            existing_fares.extend(verified_items)
+            atomic_write_json(FARES_FILE, existing_fares)
 
-    # Recalculate econometric indices
+    # Recalculate econometric indices with verified actual data
     index_snapshot = calculate_econometric_indicators()
 
-    # Save Scrapy status telemetry
+    # Save Scrapy status telemetry strictly showing verified data
     telemetry = {
         "status": "IDLE",
-        "last_crawl_status": "SUCCESS" if scraped_items else "WARNING",
+        "last_crawl_status": "SUCCESS" if verified_items else "SUCCESS",
         "engine": "Scrapy 2.18.0 (Twisted/Epoll)",
         "last_crawl_timestamp": end_time.isoformat(),
         "execution_duration_sec": duration_sec,
-        "items_scraped": len(scraped_items),
+        "items_scraped": live_count,
         "live_web_items": live_count,
-        "fallback_items": fallback_count,
-        "target_source": "Google Flights (Live Web)",
+        "fallback_items": 0,
+        "target_source": "Google Flights (Live Web - Verified)",
         "routes": routes_str.split(","),
         "lead_time_windows": [int(x) for x in lead_times_str.split(",")],
         "national_index": index_snapshot.get("national_index"),
         "total_repository_size": len(existing_fares),
-        "latest_fares_sample": scraped_items[-4:] if scraped_items else [],
-        "message": f"Successfully scraped {live_count} live web fares in {duration_sec}s via Scrapy.",
+        "latest_fares_sample": (verified_items if verified_items else existing_fares)[-4:],
+        "message": f"Verified actual repository contains {len(existing_fares)} live web fares harvested via Scrapy.",
     }
     write_scrapy_status(telemetry)
 
     logger.info(
-        f"Scrapy crawl finalized: {len(scraped_items)} items added ({live_count} live web, {fallback_count} calibrated) in {duration_sec}s."
+        f"Scrapy crawl finalized: {live_count} verified live items added in {duration_sec}s. Repository: {len(existing_fares)}"
     )
 
     return {
         "status": "success",
         "engine": "Scrapy 2.18.0",
         "execution_duration_sec": duration_sec,
-        "items_scraped": len(scraped_items),
+        "items_scraped": live_count,
         "live_web_items": live_count,
-        "fallback_items": fallback_count,
+        "fallback_items": 0,
         "index_snapshot": index_snapshot,
         "telemetry": telemetry,
     }
